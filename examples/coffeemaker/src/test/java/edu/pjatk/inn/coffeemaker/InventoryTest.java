@@ -11,10 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sorcer.test.ProjectContext;
 import org.sorcer.test.SorcerTestRunner;
+import sorcer.service.Context;
 import sorcer.service.ContextException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SorcerTestRunner.class)
 @ProjectContext("examples/coffeemaker")
@@ -63,4 +63,68 @@ public class InventoryTest {
         americano.setAmtChocolate(0);
     }
 
+    /**
+     * 1. Making coffee doesn't decrease inventory
+     * 2. You should not be able to lower inventory level by any means other from making coffee
+     */
+    @Test
+    public void AddInventory(){
+        inventory.setChocolate(100);
+        inventory.setCoffee(100);
+        inventory.setSugar(100);
+        inventory.setMilk(100);
+        assertEquals(coffeeMaker.checkInventory().getChocolate(), 100);
+        assertEquals(coffeeMaker.checkInventory().getCoffee(), 100);
+        assertEquals(coffeeMaker.checkInventory().getSugar(), 100);
+        assertEquals(coffeeMaker.checkInventory().getMilk(), 100);
+
+        coffeeMaker.makeCoffee(mocha, 40);
+        assertEquals(coffeeMaker.checkInventory().getChocolate(), 100-mocha.getAmtChocolate());
+        // After purchasing mocha amount of chocolate in machine should decrease.
+
+
+        inventory.setChocolate(0);
+        assertEquals(coffeeMaker.checkInventory().getChocolate(), 100);
+        // In documentation stated that the only way to lower inventory is by making coffee (???)
+    }
+
+    /**
+     * All OK
+     */
+    @Test
+    public void CheckInventory(){
+
+        inventory.setChocolate(100);
+        inventory.setCoffee(100);
+        inventory.setSugar(100);
+        inventory.setMilk(100);
+        assertEquals(coffeeMaker.checkInventory().getChocolate(), 100);
+        assertEquals(coffeeMaker.checkInventory().getCoffee(), 100);
+        assertEquals(coffeeMaker.checkInventory().getSugar(), 100);
+        assertEquals(coffeeMaker.checkInventory().getMilk(), 100);
+    }
+
+    /**
+     * All OK
+     */
+    @Test
+    public void PurchaseTest(){
+        inventory.setChocolate(0);
+        inventory.setCoffee(0);
+        inventory.setSugar(0);
+        inventory.setMilk(0);
+
+        assertEquals(coffeeMaker.checkInventory().getMilk(), 0);
+
+        assertFalse(coffeeMaker.checkInventory().enoughIngredients(mocha));
+        assertEquals(coffeeMaker.makeCoffee(espresso, 100), 100); //returned money, coffe wasn't made. OK
+
+        inventory.setChocolate(100);
+        inventory.setCoffee(100);
+        inventory.setSugar(100);
+        inventory.setMilk(100);
+        assertEquals(coffeeMaker.makeCoffee(mocha, 120), 20); //coffe made, returned 120-100=20 OK
+        assertEquals(coffeeMaker.makeCoffee(mocha, 100), 0);
+        assertEquals(coffeeMaker.makeCoffee(mocha, 99), 99);
+    }
 }
