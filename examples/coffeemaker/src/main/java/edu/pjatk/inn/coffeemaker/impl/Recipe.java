@@ -110,17 +110,32 @@ public class Recipe implements Serializable {
 		if (price >= 0) {
 			this.price = price;
 		} 
-	} 
+	}
+	/**
+	 * Compare this Recipe with and another Recipe
+	 * @param r
+	 * @return true if they are equal / false if they are not equal
+	 */
     public boolean equals(Recipe r) {
         if((this.name).equals(r.getName())) {
             return true;
         }
         return false;
     }
+
+	/**
+	 * @return name
+	 */
     public String toString() {
     	return name;
     }
 
+	/**
+	 * This method converts the Context to a Recipe
+	 * @param context
+	 * @return r
+	 * @throws ContextException
+	 */
 	static public Recipe getRecipe(Context context) throws ContextException {
 		Recipe r = new Recipe();
 		try {
@@ -135,7 +150,12 @@ public class Recipe implements Serializable {
 		}
 		return r;
 	}
-
+	/**
+	 * This method extracts contents of a recipe
+	 * @param recipe
+	 * @return cxt
+	 * @throws ContextException
+	 */
 	static public Context getContext(Recipe recipe) throws ContextException {
 		Context cxt = new ServiceContext();
 		cxt.putValue("key", recipe.getName());
