@@ -76,7 +76,7 @@ public class RecipeTest {
 
     /**
      * FIXED
-     * Problem was when deleteRecipe called, The recipe didn't removed from the recipe array
+     * S: Problem was when deleteRecipe called, The recipe didn't removed from the recipe array
      *Two problems present in this test:
      * 1. Deletion must be by beverage name, not object itself
      * 2. If coffeeMaker didn't delete anything, it should return false
@@ -92,6 +92,8 @@ public class RecipeTest {
     }
 
     /**
+     * FIXED
+     * S: In edit recipe, the method was searchin for new recipe's name instead of old recipe's name
      * Having two recipes with the same name is prohibited.
      */
     @Test
