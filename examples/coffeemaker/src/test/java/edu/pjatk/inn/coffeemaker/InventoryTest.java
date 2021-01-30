@@ -65,12 +65,44 @@ public class InventoryTest {
 
     /**
      * FIXED
-     * S: in make coffee method choclate amount was increased instead of decrese
-     * 1. Making coffee doesn't decrease inventory
+     * S2:
      * 2. You should not be able to lower inventory level by any means other from making coffee
      */
     @Test
     public void testAddInventory(){
+        inventory.setChocolate(100);
+        inventory.setCoffee(90);
+        inventory.setSugar(80);
+        inventory.setMilk(70);
+        assertEquals(coffeeMaker.checkInventory().getChocolate(), 100);
+        assertEquals(coffeeMaker.checkInventory().getCoffee(), 90);
+        assertEquals(coffeeMaker.checkInventory().getSugar(), 80);
+        assertEquals(coffeeMaker.checkInventory().getMilk(), 70);
+
+        assertFalse(coffeeMaker.addInventory(-20,0,0,0));
+        assertTrue(coffeeMaker.addInventory(20,0,0,0));
+        assertEquals(coffeeMaker.checkInventory().getChocolate(), 120); // This line gives error
+
+        assertFalse(coffeeMaker.addInventory(0,-20,0,0));
+        assertTrue(coffeeMaker.addInventory(0,20,0,0));
+        assertEquals(coffeeMaker.checkInventory().getCoffee(), 110);
+
+        assertFalse(coffeeMaker.addInventory(0,0,-20,0));
+        assertTrue(coffeeMaker.addInventory(0,0,20,0)); // sugar adding gave an error
+        assertEquals(coffeeMaker.checkInventory().getSugar(), 100);
+
+        assertFalse(coffeeMaker.addInventory(0,0,0,-20));
+        assertTrue(coffeeMaker.addInventory(0,0,0,20));
+        assertEquals(coffeeMaker.checkInventory().getMilk(), 90);
+    }
+
+    /**
+     * FIXED
+     * S: in make coffee method choclate amount was increased instead of decrese
+     * 1. Making coffee doesn't decrease inventory
+     */
+    @Test
+    public void testMakeCoffe() {
         inventory.setChocolate(100);
         inventory.setCoffee(100);
         inventory.setSugar(100);
@@ -83,11 +115,6 @@ public class InventoryTest {
         coffeeMaker.makeCoffee(mocha, 100);
         assertEquals(coffeeMaker.checkInventory().getChocolate(), 100-mocha.getAmtChocolate());
         // After purchasing mocha amount of chocolate in machine should decrease.
-
-
-        //inventory.setChocolate(0);
-        //assertEquals(coffeeMaker.checkInventory().getChocolate(), 100);
-        // In documentation stated that the only way to lower inventory is by making coffee (???)
     }
 
     /**
