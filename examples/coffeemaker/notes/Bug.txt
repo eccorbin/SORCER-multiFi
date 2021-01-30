@@ -1,0 +1,20 @@
+The following bugs were found because they did not comply with the User Stories/Requirements
+
+Bug 1:
+testAddRecipe(), NUM_RECIPES in CoffeeMaking.java was set to 4 instead of 3.
+
+Bug 2:
+testDeleteRecipe(), deletRecipe would not revome the recipe from the recipe array.
+
+Bug 3:
+testEditRecipe(), having two recipes with the same name is prohibited.
+editRecipe method was not looking into the oldRecipe.
+
+Bug 4:
+testMakeCoffe()
+Making coffee did not decrease the inventory.
+The makeCoffee method was increasing the chocolate amount instead of decreasing it.
+
+Bug 5:
+testAddInventory()
+Suger positivness check was wrong in the addInventory method. '> 0' used instead of '< 0'
