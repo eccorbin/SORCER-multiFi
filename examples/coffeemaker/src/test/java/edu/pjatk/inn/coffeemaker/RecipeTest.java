@@ -63,6 +63,7 @@ public class RecipeTest {
     }
 
     /**
+     * FIXED
     *This test shows the bug. Requirements state that we can add only 3 recipes max.
     */
     @Test
