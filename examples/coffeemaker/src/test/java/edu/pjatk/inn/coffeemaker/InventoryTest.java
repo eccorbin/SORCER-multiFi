@@ -65,27 +65,27 @@ public class InventoryTest {
 
     /**
      * FIXED
-     * S2:
+     * S2: Suger positivness check was wrong in the addInventory method. '> 0' used instead of '< 0'
      * 2. You should not be able to lower inventory level by any means other from making coffee
      */
     @Test
     public void testAddInventory(){
-        inventory.setChocolate(100);
         inventory.setCoffee(90);
         inventory.setSugar(80);
         inventory.setMilk(70);
-        assertEquals(coffeeMaker.checkInventory().getChocolate(), 100);
+        inventory.setChocolate(100);
         assertEquals(coffeeMaker.checkInventory().getCoffee(), 90);
-        assertEquals(coffeeMaker.checkInventory().getSugar(), 80);
         assertEquals(coffeeMaker.checkInventory().getMilk(), 70);
+        assertEquals(coffeeMaker.checkInventory().getSugar(), 80);
+        assertEquals(coffeeMaker.checkInventory().getChocolate(), 100);
 
         assertFalse(coffeeMaker.addInventory(-20,0,0,0));
         assertTrue(coffeeMaker.addInventory(20,0,0,0));
-        assertEquals(coffeeMaker.checkInventory().getChocolate(), 120); // This line gives error
+        assertEquals(coffeeMaker.checkInventory().getCoffee(), 110);
 
         assertFalse(coffeeMaker.addInventory(0,-20,0,0));
         assertTrue(coffeeMaker.addInventory(0,20,0,0));
-        assertEquals(coffeeMaker.checkInventory().getCoffee(), 110);
+        assertEquals(coffeeMaker.checkInventory().getMilk(), 90);
 
         assertFalse(coffeeMaker.addInventory(0,0,-20,0));
         assertTrue(coffeeMaker.addInventory(0,0,20,0)); // sugar adding gave an error
@@ -93,7 +93,7 @@ public class InventoryTest {
 
         assertFalse(coffeeMaker.addInventory(0,0,0,-20));
         assertTrue(coffeeMaker.addInventory(0,0,0,20));
-        assertEquals(coffeeMaker.checkInventory().getMilk(), 90);
+        assertEquals(coffeeMaker.checkInventory().getChocolate(), 120);
     }
 
     /**
