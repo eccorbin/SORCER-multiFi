@@ -2,6 +2,7 @@ package edu.pjatk.inn.coffeemaker;
 
 import edu.pjatk.inn.coffeemaker.impl.CoffeeMaker;
 import edu.pjatk.inn.coffeemaker.impl.DeliveryImpl;
+import edu.pjatk.inn.coffeemaker.impl.MultipleDeliveryImpl;
 import edu.pjatk.inn.coffeemaker.impl.Recipe;
 import edu.pjatk.inn.requestor.CoffeemakerConsumer;
 import org.junit.After;
@@ -151,6 +152,39 @@ public class CoffeeServiceTest {
 		logger.info("result: " + result(mod));
 		assertEquals(value(result(mod), "paid$"), 120);
 		assertEquals(value(result(mod), "change$"), 10);
+		assertEquals(value(result(mod), "makeCoffee"), 50);
+		assertEquals(value(result(mod), "deliver"), 60);
+	}
+
+	@Test
+	public void deliverMultipleCoffee() throws Exception {
+		// make sure that the CoffeMaker knows the recipe
+		Routine cmt = task(sig("addRecipe", CoffeeService.class), espresso);
+		exert(cmt);
+
+		// order espresso with delivery
+		ContextDomain mod = model(
+				val("recipe/key", "espresso"),
+				val("paid$", 320),
+				vla("amount", 5)
+				val("location", "PJATK"),
+				val("room", "101"),
+
+				ent(sig("makeCoffee", CoffeeService.class,
+						result("coffee$", inPaths("recipe/key")))),
+				ent(sig("deliverMultiple", MultipleDelivery.class,
+						result("Multipledelivery$", inPaths("location", "room")))));
+
+		add(mod, ent("change$", invoker("paid$ - (coffee$*amount + delivery$)", args("paid$", "coffee$", "delivery$"))));
+		dependsOn(mod, dep("change$", paths("makeCoffee")), dep("change$", paths("deliver")));
+
+		responseUp(mod, "makeCoffee", "deliverMultiple", "change$", "paid$");
+		Context out = response(mod);
+		logger.info("out: " + out);
+		logger.info("result: " + result(mod));
+		assertEquals(value(result(mod), "paid$"), 320);
+		assertEquals(value(result(mod), "change$"), 10);
+		assertEquals(value(result(mod), "amount"), 5);
 		assertEquals(value(result(mod), "makeCoffee"), 50);
 		assertEquals(value(result(mod), "deliver"), 60);
 	}
